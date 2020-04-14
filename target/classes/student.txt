@@ -1,0 +1,5 @@
+zs nan a 60
+ww nan a 70
+ls nv b 90
+ld nan b 85
+ad nan a 80
