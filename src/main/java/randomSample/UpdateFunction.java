@@ -33,7 +33,6 @@ public class UpdateFunction extends ProcessFunction<Tuple2<Integer, Character>, 
         if (current == null) {
             current = new SampleRecord(10);
         }
-
         current.update(value.f1);
 
         // rewrite state

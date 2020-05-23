@@ -1,13 +1,18 @@
 package randomSample;
 
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.api.java.tuple.Tuple4;
+import org.apache.flink.streaming.api.datastream.ConnectedStreams;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
+import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.util.Collector;
 import scala.Char;
+import sun.lwawt.macosx.CPrinterDevice;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -21,13 +26,13 @@ public class RandomSample {
         final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
         // generate dataSource
-        String string1 = RandomStringUtils.randomAlphabetic(100);
+        String string1 = RandomStringUtils.randomAlphabetic(10000);
         List<Character> list1 = new LinkedList<>();
         for (int i = 0; i < string1.length(); i++) {
             list1.add(string1.charAt(i));
         }
 
-        String string2 = RandomStringUtils.randomAlphabetic(100);
+        String string2 = RandomStringUtils.randomAlphabetic(10000);
         List<Character> list2 = new LinkedList<>();
         for (int i = 0; i < string2.length(); i++) {
             list2.add(string2.charAt(i));
@@ -56,8 +61,6 @@ public class RandomSample {
                         })
                         .keyBy(0)
                         .process(new UpdateFunction());
-        sampleRecordStream1.print("sampleRecordStream1: ");
-        sampleRecordStream2.print("sampleReocrdStream2: ");
 
         DataStream<SampleRecord> mergedStream =
                 sampleRecordStream1
@@ -76,6 +79,8 @@ public class RandomSample {
                                 .keyBy(0))
                         .flatMap(new MergeFunction());
 
+        sampleRecordStream1.print("sampleRecordStream1: ");
+        sampleRecordStream2.print("sampleReocrdStream2: ");
         mergedStream.print("mergedStream: ");
 
         env.execute();

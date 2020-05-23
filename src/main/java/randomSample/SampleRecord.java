@@ -1,5 +1,7 @@
 package randomSample;
 
+import scala.Char;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -98,18 +100,18 @@ public class SampleRecord {
         int n1 = this.getStreamlength();
         int n2 = sampleRecord.getStreamlength();
         Random random = new Random();
-
-        for (int i = 0; i < listlength; i++) {
+        int k1 = 0, k2 = 0;
+        int s = n1 + n2 < listlength ? n1 + n2 : listlength;
+        for (int i = 0; i < s; i++) {
             int num = random.nextInt(n1 + n2);
             if (num < n1) {
-                num = random.nextInt(sampleList1.size());
-                summary.update((Character) sampleList1.get(num));
-                sampleList1.remove(num);
+                summary.update((Character) sampleList1.get(k1));
+                k1++;
                 --n1;
             } else {
                 num = random.nextInt(sampleList2.size());
-                summary.update((Character) sampleList2.get(num));
-                sampleList2.remove(num);
+                summary.update((Character) sampleList2.get(k2));
+                k2++;
                 --n2;
             }
         }

@@ -20,7 +20,6 @@ public class MergeFunction extends RichCoFlatMapFunction<Tuple2<Integer, SampleR
         state2 = getRuntimeContext().getState(new ValueStateDescriptor<SampleRecord>("sampleState2", SampleRecord.class));
     }
 
-
     @Override
     public void flatMap1(Tuple2<Integer, SampleRecord> value, Collector<SampleRecord> out) throws Exception {
         SampleRecord sampleRecord2 = state2.value();
@@ -28,7 +27,7 @@ public class MergeFunction extends RichCoFlatMapFunction<Tuple2<Integer, SampleR
             SampleRecord result = value.f1.merge(sampleRecord2);
             state2.clear();
             out.collect(result);
-        }else{
+        } else {
             state1.update(value.f1);
         }
     }
@@ -36,11 +35,11 @@ public class MergeFunction extends RichCoFlatMapFunction<Tuple2<Integer, SampleR
     @Override
     public void flatMap2(Tuple2<Integer, SampleRecord> value, Collector<SampleRecord> out) throws Exception {
         SampleRecord sampleRecord1 = state1.value();
-        if(sampleRecord1 != null){
-            SampleRecord result = value.f1.merge(sampleRecord1);
+        if (sampleRecord1 != null) {
+            SampleRecord record = value.f1.merge(sampleRecord1);
             state1.clear();
-            out.collect(result);
-        }else{
+            out.collect(record);
+        } else {
             state2.update(value.f1);
         }
     }
